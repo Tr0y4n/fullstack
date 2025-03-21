@@ -1,13 +1,14 @@
-import React from 'react';
-import { Box, TextField, Button, Typography, Link } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, TextField, Button, Typography, Link, Alert, AlertTitle } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginFormInputs } from '../../index.types';
 import { loginSchema } from '../../schemas';
 import { LoginFormProps } from './LoginForm.types';
 import { useNavigate } from 'react-router-dom';
+import app from '@/api/api';
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, toggleForgotPassword, toggleRegister }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ toggleForgotPassword, toggleRegister }) => {
   const {
     register,
     handleSubmit,
@@ -16,9 +17,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, toggleForgotPassword, t
     resolver: yupResolver(loginSchema),
   });
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleEnter = (): void => {
-    navigate('/profile'); // Перенести потом в onSubmit
+  const handleEnter = async (form) => {
+    try {
+      const { data } = await app.users.logIn(form); // в стор
+      navigate('/admin');
+    } catch (e) {
+      console.log('Ошибка при авторизации, e = ', e);
+      setErrorMessage(e.message);
+    }
   };
 
   return (
@@ -26,7 +34,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, toggleForgotPassword, t
       <Typography variant="h5" align="center" gutterBottom>
         Авторизация
       </Typography>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
+      {errorMessage && (
+        <Alert severity="error">
+          <AlertTitle>Ошибка!</AlertTitle>
+          {errorMessage}
+        </Alert>
+      )}
+      <Box component="form" sx={{ mt: 2 }}>
         <TextField
           fullWidth
           label="Логин"
@@ -46,7 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, toggleForgotPassword, t
           error={!!errors.password}
           helperText={errors.password?.message}
         />
-        <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleEnter}>
+        <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit(handleEnter)}>
           Войти
         </Button>
       </Box>
@@ -54,9 +68,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, toggleForgotPassword, t
         <Link component="button" onClick={toggleRegister} sx={{ textTransform: 'none' }}>
           Ещё нет аккаунта?
         </Link>
-        <Link component="button" onClick={toggleForgotPassword} sx={{ textTransform: 'none' }}>
+        {/* <Link component="button" onClick={toggleForgotPassword} sx={{ textTransform: 'none' }}>
           Забыли пароль?
-        </Link>
+        </Link> */}
       </Box>
     </>
   );

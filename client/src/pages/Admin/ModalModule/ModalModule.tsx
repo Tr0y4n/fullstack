@@ -1,46 +1,53 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Link, Alert, AlertTitle } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { RegisterFormInputs } from '../../index.types';
-import { registerSchema } from '../../schemas';
-import { useNavigate } from 'react-router-dom';
-import { RegisterFormProps } from './RegisterForm.types';
+import React, { useEffect, useState } from 'react';
+import styles from './ModalModule.module.scss';
 import app from '@/api/api';
+import { ModalModuleProps } from './ModalModule.types';
+import { Alert, AlertTitle, Box, Button, Paper, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { RegisterFormInputs } from '@/pages/Auth/index.types';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { registerSchema } from '@/pages/Auth/schemas';
+import dayjs from 'dayjs';
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
+export const ModalModule: React.FC<ModalModuleProps> = ({ currentRow, setEditingItem, setTableData }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormInputs>({
     resolver: yupResolver(registerSchema),
+    defaultValues: {
+      login: currentRow?.login,
+      password: currentRow?.password,
+      email: currentRow?.email,
+      firstName: currentRow?.first_name,
+      lastName: currentRow?.last_name,
+    },
   });
-  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleEnter = async (formData: RegisterFormInputs): Promise<void> => {
-    try {
-      const body = {
-        email: formData.email,
-        login: formData.login,
-        password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-      };
-      const res = await app.users.addUser(body); // Можно засунуть в стор
-      navigate('/profile');
-    } catch (e) {
-      console.log('Ошибка при регистрации, e = ', e);
-      setErrorMessage(e.message);
-    }
+  const handleEnter = async (form) => {
+    const { email, login, password } = form;
+    const body = {
+      id: currentRow?.id,
+      email,
+      login,
+      password,
+      first_name: form.firstName,
+      last_name: form.lastName,
+    };
+
+    const { data: newUser } = await app.users.editUser(body);
+    setTableData((prevState) => prevState.map((row) => (row.id === currentRow.id ? { ...row, ...newUser, created_at: dayjs(newUser.created_at) } : row)));
+    setEditingItem(null);
   };
 
   return (
-    <>
-      <Typography variant="h5" align="center" gutterBottom>
-        Регистрация
-      </Typography>
+    <Paper
+      sx={{
+        padding: '0 10px',
+      }}
+    >
       {errorMessage && (
         <Alert severity="error">
           <AlertTitle>Ошибка!</AlertTitle>
@@ -99,16 +106,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
           helperText={errors.password?.message}
         />
         <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit(handleEnter)}>
-          Войти
+          Сохранить
         </Button>
       </Box>
-      <Box display="flex" justifyContent="space-between" mt={2}>
-        <Link component="button" onClick={toggleLogin} sx={{ textTransform: 'none' }}>
-          Обратно на авторизацию
-        </Link>
-      </Box>
-    </>
+      <Box display="flex" justifyContent="space-between" mt={2}></Box>
+    </Paper>
   );
 };
-
-export default RegisterForm;

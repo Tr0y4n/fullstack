@@ -2,17 +2,13 @@ import React, { useState } from 'react';
 import { Grid2, Paper, Box } from '@mui/material';
 import { SubmitHandler } from 'react-hook-form';
 // import logo from '@assets/logoRed.png';
-import { ForgotPasswordFormInputs, LoginFormInputs } from './index.types';
+import { ForgotPasswordFormInputs } from './index.types';
 import LoginForm from './components/LoginForm/LoginForm';
 import ForgotPasswordForm from './components/ForgotPassword/ForgotPassword';
 import RegisterForm from './components/RegisterForm/RegisterForm';
 
 export const Auth: React.FC = () => {
   const [pageType, setPageType] = useState('login');
-
-  const handleLoginSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    console.log('Авторизация', data);
-  };
 
   const handleForgotSubmit: SubmitHandler<ForgotPasswordFormInputs> = (data) => {
     console.log('Восстановление пароля', data);
@@ -27,7 +23,7 @@ export const Auth: React.FC = () => {
           </div>
         </Box>
         {pageType === 'login' ? (
-          <LoginForm onSubmit={handleLoginSubmit} toggleForgotPassword={() => setPageType('forgot')} toggleRegister={() => setPageType('register')} />
+          <LoginForm toggleForgotPassword={() => setPageType('forgot')} toggleRegister={() => setPageType('register')} />
         ) : pageType === 'forgot' ? (
           <ForgotPasswordForm onSubmit={handleForgotSubmit} toggleLogin={() => setPageType('login')} />
         ) : (
