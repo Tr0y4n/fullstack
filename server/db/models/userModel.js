@@ -1,6 +1,6 @@
 const db = require('../db');
 
-async function addUser(email, first_name, last_name, login, password) {
+async function addUser(email, first_name, last_name, login, password, admin) {
   try {
     const [user] = await db('users')
       .insert({
@@ -9,6 +9,7 @@ async function addUser(email, first_name, last_name, login, password) {
         last_name,
         login,
         password,
+        admin,
       })
       .returning('*');
 

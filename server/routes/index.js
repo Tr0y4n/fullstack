@@ -4,14 +4,14 @@ const { addUser, getAllUsers, userLogIn, editUser, deleteUser } = require('../db
 const router = express.Router();
 
 router.post('/users', async (req, res) => {
-  const { email, first_name, last_name, login, password } = req.body;
+  const { email, first_name, last_name, login, password, admin } = req.body;
 
   if (!email || !first_name || !last_name || !login || !password) {
     return res.status(400).json({ message: 'Все поля обязательны' });
   }
 
   try {
-    const user = await addUser(email, first_name, last_name, login, password);
+    const user = await addUser(email, first_name, last_name, login, password, admin);
     res.status(201).json(user);
   } catch (e) {
     console.error('Ошибка при добавлении пользователя:', e);

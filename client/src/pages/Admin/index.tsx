@@ -16,6 +16,7 @@ export const tableColumns = [
   { field: 'first_name', headerName: 'Имя' },
   { field: 'last_name', headerName: 'Фамилия' },
   { field: 'created_at', headerName: 'Дата регистрации' },
+  { field: 'admin', headerName: 'Администратор', width: '90px' },
   { field: 'actions', headerName: 'Действия', width: '90px' },
 ];
 
@@ -36,9 +37,10 @@ export const Admin: React.FC = () => {
     const getUsers = async () => {
       try {
         const { data } = await app.users.getAll();
-        const formattedData = data.map(({ created_at, ...rest }) => ({
+        const formattedData = data.map(({ created_at, admin, ...rest }) => ({
           ...rest,
           created_at: dayjs(created_at),
+          admin: admin ? 'Да' : 'Нет',
           actions: (
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <ModeEditIcon onClick={() => setEditingItem(rest)} sx={{ cursor: 'pointer' }} />

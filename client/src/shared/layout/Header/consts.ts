@@ -14,8 +14,3 @@ export const usersAudit: Array<MenuItems> = [
   { name: 'Аудит входа/выхода пользователей', link: '/audit/user-auth-audit' },
   { name: 'Мониторинг транзакций пользователей', link: '/audit/user-transactions-monitoring' },
 ];
-
-export const userMenu: Array<MenuItems> = [
-  { name: 'Профиль', link: '/profile' },
-  { name: 'Выйти', link: '/logout' },
-];

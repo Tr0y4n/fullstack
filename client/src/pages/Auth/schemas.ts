@@ -15,4 +15,5 @@ export const registerSchema = yup.object({
   lastName: yup.string().required('Обязательное поле').max(25, 'Максимум 25 символов'),
   login: yup.string().required('Обязательное поле').max(25, 'Максимум 25 символов'),
   password: yup.string().min(4, 'Минимум 4 символа').required('Обязательное поле'),
+  admin: yup.boolean(),
 });

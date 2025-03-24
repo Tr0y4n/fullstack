@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Link, Alert, AlertTitle } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, TextField, Button, Typography, Link, Alert, AlertTitle, Checkbox, FormControlLabel } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RegisterFormInputs } from '../../index.types';
 import { registerSchema } from '../../schemas';
 import { useNavigate } from 'react-router-dom';
 import { RegisterFormProps } from './RegisterForm.types';
 import app from '@/api/api';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '@/store/userSlice';
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<RegisterFormInputs>({
     resolver: yupResolver(registerSchema),
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleEnter = async (formData: RegisterFormInputs): Promise<void> => {
@@ -27,9 +31,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
         password: formData.password,
         first_name: formData.firstName,
         last_name: formData.lastName,
+        admin: formData.admin,
       };
-      const res = await app.users.addUser(body); // Можно засунуть в стор
-      navigate('/profile');
+      const { data } = await app.users.addUser(body); // Можно засунуть в стор
+      dispatch(setCurrentUser(data));
+      navigate('/admin');
     } catch (e) {
       console.log('Ошибка при регистрации, e = ', e);
       setErrorMessage(e.message);
@@ -50,7 +56,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
       <Box component="form" sx={{ mt: 2 }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <TextField
-            fullWidth
             label="Имя"
             variant="outlined"
             margin="normal"
@@ -60,7 +65,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
             sx={{ width: '49%' }}
           />
           <TextField
-            fullWidth
             label="Фамилия"
             variant="outlined"
             margin="normal"
@@ -79,24 +83,31 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
           error={!!errors.email}
           helperText={errors.email?.message}
         />
-        <TextField
-          fullWidth
-          label="Логин"
-          variant="outlined"
-          margin="normal"
-          {...register('login')}
-          error={!!errors.login}
-          helperText={errors.login?.message}
-        />
-        <TextField
-          fullWidth
-          label="Пароль"
-          variant="outlined"
-          margin="normal"
-          type="password"
-          {...register('password')}
-          error={!!errors.password}
-          helperText={errors.password?.message}
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TextField
+            label="Логин"
+            variant="outlined"
+            margin="normal"
+            {...register('login')}
+            error={!!errors.login}
+            helperText={errors.login?.message}
+            sx={{ width: '49%' }}
+          />
+          <TextField
+            label="Пароль"
+            variant="outlined"
+            margin="normal"
+            type="password"
+            {...register('password')}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            sx={{ width: '49%' }}
+          />
+        </Box>
+        <Controller
+          name="admin"
+          control={control}
+          render={({ field }) => <FormControlLabel control={<Checkbox {...field} checked={field.value} color="primary" />} label="Администратор" />}
         />
         <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit(handleEnter)}>
           Войти

@@ -7,6 +7,8 @@ import { loginSchema } from '../../schemas';
 import { LoginFormProps } from './LoginForm.types';
 import { useNavigate } from 'react-router-dom';
 import app from '@/api/api';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '@/store/userSlice';
 
 const LoginForm: React.FC<LoginFormProps> = ({ toggleForgotPassword, toggleRegister }) => {
   const {
@@ -17,11 +19,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ toggleForgotPassword, toggleRegis
     resolver: yupResolver(loginSchema),
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleEnter = async (form) => {
     try {
-      const { data } = await app.users.logIn(form); // в стор
+      const { data } = await app.users.logIn(form);
+      dispatch(setCurrentUser(data));
       navigate('/admin');
     } catch (e) {
       console.log('Ошибка при авторизации, e = ', e);

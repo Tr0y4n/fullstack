@@ -16,11 +16,6 @@ const MenuDropdown: React.FC<MenuDropdownProps> = ({ buttomName, data, className
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (link: string) => {
-    setAnchorEl(null);
-    navigate(link);
-  };
-
   return (
     <div className={cn(styles.header, className)}>
       <Button
@@ -44,7 +39,20 @@ const MenuDropdown: React.FC<MenuDropdownProps> = ({ buttomName, data, className
         }}
       >
         {data.map((item) => (
-          <MenuItem onClick={() => handleMenuItemClick(item.link)}>{item.name}</MenuItem>
+          <MenuItem
+            key={item.name}
+            onClick={() => {
+              setAnchorEl(null);
+
+              if (item.onClick) {
+                item.onClick(); // вызываем кастомный onClick
+              } else if (item.link) {
+                navigate(item.link); // иначе делаем переход
+              }
+            }}
+          >
+            {item.name}
+          </MenuItem>
         ))}
       </Menu>
     </div>
