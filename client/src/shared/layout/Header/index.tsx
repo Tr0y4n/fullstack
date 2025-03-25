@@ -12,21 +12,22 @@ import { setCurrentUser } from '@/store/userSlice';
 export const Header: React.FC = () => {
   const navigate = useNavigate();
   // const handleLogoClick = () => navigate('/');
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const dispatch = useDispatch();
+  // const currentUser = useSelector((state) => state.user.currentUser);
+  // const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const isAdmin = currentUser?.admin;
-  const isLoggedIn = !!currentUser;
+  const isAdmin = user?.admin;
+  const isLoggedIn = !!user;
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!user) {
       navigate('/');
     }
-  }, [currentUser]);
+  }, [user]);
 
   const onLeaveClick = () => {
+    localStorage.removeItem('user');
     navigate('/');
-    dispatch(setCurrentUser(null));
   };
 
   const userMenu: Array<MenuItems> = [
@@ -36,15 +37,16 @@ export const Header: React.FC = () => {
 
   return (
     <div className={styles.header}>
-      {/* <img className={styles.logo} src={'logo'} onClick={handleLogoClick} /> */}
       <div style={{ color: 'white' }}>SMEGMA</div>
       <div className={styles.center}>
+        <Box onClick={() => navigate('/catalog')} sx={{ color: 'white', cursor: 'pointer' }}>
+          КАТАЛОГ
+        </Box>
         {isLoggedIn && (
-          <Box onClick={() => navigate('/catalog')} sx={{ color: 'white', cursor: 'pointer' }}>
-            КАТАЛОГ
+          <Box onClick={() => navigate('/my-books')} sx={{ color: 'white', cursor: 'pointer' }}>
+            МОИ КНИГИ
           </Box>
         )}
-
         {isAdmin && (
           <Box onClick={() => navigate('/admin')} sx={{ color: 'white', cursor: 'pointer' }}>
             АДМИНИСТРИРОВАНИЕ
@@ -52,7 +54,7 @@ export const Header: React.FC = () => {
         )}
       </div>
 
-      {isLoggedIn && <MenuDropdown buttomName={currentUser?.login} data={userMenu} />}
+      {isLoggedIn && <MenuDropdown buttomName={user?.login} data={userMenu} />}
     </div>
   );
 };

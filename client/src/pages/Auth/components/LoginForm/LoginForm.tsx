@@ -27,6 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ toggleForgotPassword, toggleRegis
       const { data } = await app.users.logIn(form);
       dispatch(setCurrentUser(data));
       navigate('/admin');
+      localStorage.setItem('user', JSON.stringify(data));
     } catch (e) {
       console.log('Ошибка при авторизации, e = ', e);
       setErrorMessage(e.message);
@@ -72,9 +73,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ toggleForgotPassword, toggleRegis
         <Link component="button" onClick={toggleRegister} sx={{ textTransform: 'none' }}>
           Ещё нет аккаунта?
         </Link>
-        {/* <Link component="button" onClick={toggleForgotPassword} sx={{ textTransform: 'none' }}>
-          Забыли пароль?
-        </Link> */}
       </Box>
     </>
   );

@@ -35,6 +35,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ toggleLogin }) => {
       };
       const { data } = await app.users.addUser(body); // Можно засунуть в стор
       dispatch(setCurrentUser(data));
+      localStorage.setItem('user', JSON.stringify(data));
       navigate('/admin');
     } catch (e) {
       console.log('Ошибка при регистрации, e = ', e);
