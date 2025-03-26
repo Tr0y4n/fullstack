@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Menu, MenuItem, IconButton } from '@mui/material';
 import { BookCardProps } from './BookCard.types';
-import IMG from './/vor.png';
+import IMG from './vor.png';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import styles from './BookCard.module.scss';
 import app from '@/api/api';
+
+const BASE_URL = 'http://localhost:5000';
 
 export const BookCard: React.FC<BookCardProps> = ({ data, isLoggedIn, isSaved, setModalData, setBooksList }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -52,7 +54,7 @@ export const BookCard: React.FC<BookCardProps> = ({ data, isLoggedIn, isSaved, s
 
   return (
     <Card className={styles.layout} sx={{ width: 400, height: 180, display: 'flex', flexDirection: 'row' }}>
-      <CardMedia component="img" sx={{ width: '33%' }} image={IMG} />
+      <CardMedia component="img" sx={{ width: '33%' }} image={`${BASE_URL}${data?.cover_url}` || IMG} />
       <CardContent className={styles.cardContent} sx={{ width: '67%', padding: '5px' }}>
         <Typography
           gutterBottom

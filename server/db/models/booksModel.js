@@ -10,9 +10,9 @@ async function getAllBooks() {
   }
 }
 
-async function addBook(author, name, publisher, anotation, added_by) {
+async function addBook(author, name, publisher, anotation, added_by, cover_url) {
   try {
-    const [addedBook] = await db('books').insert({ author, name, publisher, anotation, added_by }).returning('*');
+    const [addedBook] = await db('books').insert({ author, name, publisher, anotation, added_by, cover_url }).returning('*');
     return addedBook;
   } catch (e) {
     console.log('Ошибка при записи книги в базу, e = ', e);
@@ -20,9 +20,9 @@ async function addBook(author, name, publisher, anotation, added_by) {
   }
 }
 
-async function editBook(id, author, name, publisher, anotation) {
+async function editBook(id, author, name, publisher, anotation, cover_url) {
   try {
-    const [addedBook] = await db('books').where({ id }).update({ author, name, publisher, anotation }).returning('*');
+    const [addedBook] = await db('books').where({ id }).update({ author, name, publisher, anotation, cover_url }).returning('*');
     return addedBook;
   } catch (e) {
     console.log('Ошибка при редактировании книги в базe, e = ', e);

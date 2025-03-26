@@ -6,4 +6,5 @@ export interface BooksData {
   id: number;
   name: string;
   publisher: string;
+  cover_url: string;
 }

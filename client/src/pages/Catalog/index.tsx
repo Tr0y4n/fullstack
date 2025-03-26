@@ -36,9 +36,11 @@ export const Catalog: React.FC = () => {
         )}
         <Box sx={{ marginLeft: '700px' }}>ТИПА ТАМ ПОИСК ФИЛЬТРЫ И ВСЯ ХУЙНЯ</Box>
       </Box>
-      {booksList.map((item) => (
-        <BookCard data={item} isLoggedIn={isLoggedIn} isSaved={false} />
-      ))}
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+        {booksList?.map((item) => (
+          <BookCard data={item} isLoggedIn={isLoggedIn} isSaved={false} />
+        ))}
+      </Box>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box
           sx={{

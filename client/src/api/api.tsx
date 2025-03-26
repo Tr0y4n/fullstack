@@ -28,12 +28,20 @@ const app = {
       const response = await axiosInstance.get('/books');
       return response;
     },
-    addBook: async (body) => {
-      const response = await axiosInstance.post('/books', body);
+    addBook: async (formData) => {
+      const response = await axiosInstance.post('/books', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // обязательно
+        },
+      });
       return response;
     },
-    editBook: async (body) => {
-      const response = await axiosInstance.put('/books', body);
+    editBook: async (formData) => {
+      const response = await axiosInstance.put('/books', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // обязательно
+        },
+      });
       return response;
     },
     getUsersBooks: async (user_id) => {

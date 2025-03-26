@@ -25,6 +25,8 @@ export const MyBooks: React.FC = () => {
     getBooks();
   }, []);
 
+  console.log('MY BOOOKS', booksList);
+
   return (
     <div className={styles.layout}>
       <Box sx={{ width: '100%', height: 50, background: '#ddedf0', marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
