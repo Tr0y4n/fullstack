@@ -1,4 +1,4 @@
-const { getAllBooks, addBook, editBook } = require('../db/models/booksModel');
+const { getAllBooks, addBook, editBook, filterBooks } = require('../db/models/booksModel');
 const { getSavedBooksForUser, saveBookToUser, deleteUsersBook } = require('../db/models/userBooksModel');
 
 const express = require('express');
@@ -49,6 +49,21 @@ router.put('/', upload.single('cover'), async (req, res) => {
     res.status(201).json({ message: 'Книга успешно отредактирована', saved });
   } catch (e) {
     console.log('Ошибка при редактировании книги:', e);
+    res.status(500).json({ message: 'Произошла ошибка сервера', error: e.message });
+  }
+});
+
+router.post(`/filter`, async (req, res) => {
+  const { field, filtered_value } = req.body;
+
+  if (!field || !filtered_value) {
+    return res.status(400).json({ message: 'field и filtered_value обязательны' });
+  }
+  try {
+    const filtered = await filterBooks(field, filtered_value);
+    res.status(200).json(filtered);
+  } catch (e) {
+    console.log('Ошибка при фильтрации книг: ', e);
     res.status(500).json({ message: 'Произошла ошибка сервера', error: e.message });
   }
 });

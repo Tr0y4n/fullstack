@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Menu, MenuItem, IconButton } from '@mui/material';
 import { BookCardProps } from './BookCard.types';
-import IMG from './vor.png';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import styles from './BookCard.module.scss';
 import app from '@/api/api';

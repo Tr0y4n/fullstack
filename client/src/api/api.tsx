@@ -56,6 +56,10 @@ const app = {
       const response = await axiosInstance.delete(`/books/${user_id}`, { data: body });
       return response;
     },
+    getFilteredBooks: async (body) => {
+      const response = await axiosInstance.post(`/books/filter`, body);
+      return response;
+    },
   },
 };
 

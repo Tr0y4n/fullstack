@@ -30,4 +30,18 @@ async function editBook(id, author, name, publisher, anotation, cover_url) {
   }
 }
 
-module.exports = { getAllBooks, addBook, editBook };
+async function filterBooks(field, filtered_value) {
+  try {
+    if (field === 'year') {
+      return await db('books').whereRaw("split_part(publisher, ', ', 2) = ?", [filtered_value]);
+    } else {
+      const filteredBooks = await db('books').where({ [field]: filtered_value });
+      return filteredBooks;
+    }
+  } catch (e) {
+    console.log('Ошибка при редактировании книги в базe, e = ', e);
+    throw e;
+  }
+}
+
+module.exports = { getAllBooks, addBook, editBook, filterBooks };
